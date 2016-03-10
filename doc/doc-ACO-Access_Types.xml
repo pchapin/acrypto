@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.docbook.org/xml/4.5/docbookx.dtd">
+  
+<section id="Access_Types">
+  <title>Package ACO.Access_Types</title>
+
+  <para>The package <package>ACO.Access_Types</package> (full Ada) contains useful access type
+    definitions that can't be put in package <package>ACO</package> because of SPARK
+    restrictions.</para>
+
+  <synopsis>
+    type Octet_Array_Access is access Octet_Array;
+    procedure Free_Octet_Array is new
+       Ada.Unchecked_Deallocation(Octet_Array, Octet_Array_Access);
+    
+    type Double_Octet_Array_Access is access Double_Octet_Array;
+    procedure Free_Double_Octet_Array is new
+       Ada.Unchecked_Deallocation(Double_Octet_Array, Double_Octet_Array_Access);
+    
+    type Quadruple_Octet_Array_Access is access Quadruple_Octet_Array;
+    procedure Free_Quadruple_Octet_Array is new
+       Ada.Unchecked_Deallocation(Quadruple_Octet_Array, Quadruple_Octet_Array_Access);
+    
+    type Octuple_Octet_Array_Access is access Octuple_Octet_Array;
+    procedure Free_Octuple_Octet_Array is new
+       Ada.Unchecked_Deallocation(Octuple_Octet_Array, Octuple_Octet_Array_Access);
+  </synopsis>
+
+  <para>Note that only access types for the raw array types are provided. Note also that a
+    suitable deallocation procedure for each array type is also provided.</para>
+
+</section>

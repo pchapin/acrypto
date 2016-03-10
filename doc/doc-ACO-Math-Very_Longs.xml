@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.docbook.org/xml/4.5/docbookx.dtd">
+
+<section id="Extended_Precision">
+  <title>Package ACO.Math.Very_Longs</title>
+
+  <synopsis>
+type    Very_Long is private;
+subtype Bit       is Natural range 0 .. 1;
+type    Bit_Index is range 0 .. 159;
+</synopsis>
+
+  <para>Package <package>Very_Longs</package> contains a type <type>Very_Long</type> that
+    represents 160 bit natural numbers. <type>Very_Long</type> objects can be manipulated
+    similarly to ordinary integers except that, unless otherwise noted, all operations are
+    implicitly modulo 2**160. The individual bits of the <type>Very_Long</type> object are also
+    easily accessible. The choice of 160 bits is arbitrary but it makes a useful key size for
+    elliptic curve cryptography (supporting ECC was the primary motivation for this type). It is
+    expected that in the future <type>Very_Long</type> will be enhanced to support larger, or
+    even variable, bit sizes. There are many cryptographic algorithms that will need
+    this.</para>
+
+  <para>Because large integer computations play a central role in certain cryptographic
+    algorithms, this package is SPARK.</para>
+
+  <!-- Do I want to investigate using a DocBook segmented list to group related
+     operations into appropriate segments? -->
+
+  <variablelist>
+    <title>Very_Long Integer Operations</title>
+
+    <varlistentry>
+      <term>
+        <synopsis>
+function Make_From_Natural(Number : in Integer) return Very_Long;
+procedure Make_From_Hex_String(Number : in String; Result : out Very_Long; Valid out Boolean) return Very_Long;
+</synopsis>
+      </term>
+
+      <listitem>
+        <para>Constructs a <type>Very_Long</type> natural from an ordinary natural or from a
+          string of exactly 40 hex digits. The second form is useful for initializing
+            <type>Very_Long</type> naturals with extremely large numeric literals. It assumes
+          the given string contains only hex digits and is exactly 160 bits long. The second
+          form returns <code>Valid = True</code> if the input string was in an acceptable
+          format. In that case the resulting <type>Very_Long</type> contains the corresponding
+          value. If an error is encountered <code>Valid = False</code> and the value returned in
+          Result is unspecified (it might not be zero). The first form does not return an
+          validity value because every possible <type>Natural</type> can be converted into a
+            <type>Very_Long</type>.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>
+        <synopsis>
+function Add(L, R : Very_Long) return Very_Long;
+function Subtract(L, R : Very_Long) return Very_Long;
+function Multiply(L, R : Very_Long) return Very_Long;
+</synopsis>
+      </term>
+
+      <listitem>
+        <para>The usual arithmetic operations. Overflow does not occur because all oprations are
+          implicitly modulo 2**160.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>
+        <synopsis>
+function Less(L, R : Very_Long) return Boolean;
+function Less_Or_Equal(L, R : Very_Long) return Boolean;
+function Greater(L, R : Very_Long) return Boolean;
+function Greater_Or_Equal(L, R : Very_Long) return Boolean;
+</synopsis>
+      </term>
+
+      <listitem>
+        <para>The usual relational operators. The type <type>Very_Long</type> is private and so
+          "=" and "/=" are already available.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>
+        <synopsis>
+function Get_Bit(Number     : in Very_Long;
+                 Bit_Number : in Bit_Index) return Bit;
+</synopsis>
+      </term>
+
+      <listitem>
+        <para>Returns the specified bit in the given <type>Very_Long</type> integer. The least
+          significant bit is bit zero.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>
+        <synopsis>
+procedure Put_Bit(Number     : in out Very_Long;
+                  Bit_Number : in Bit_Index;
+                  Bit_Value  : in Bit);
+</synopsis>
+      </term>
+
+      <listitem>
+        <para>Replaces the specified bit with the given new value in the given
+            <type>Very_Long</type> integer. The least significant bit is bit zero.</para>
+      </listitem>
+    </varlistentry>
+
+  </variablelist>
+
+</section>

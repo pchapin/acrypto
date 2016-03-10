@@ -1,0 +1,131 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FILE   : Elliptic-Curve-Cryptography.tex
+% AUTHOR : (C) Copyright 2012 by Peter C. Chapin
+% SUBJECT: Presentation on elliptic curve cryptography
+%
+% Send comments or bug reports to:
+%
+%       Peter C. Chapin
+%       Computer Information Systems
+%       Vermont Technical College
+%       Randolph Center, VT 05061
+%       PChapin@vtc.vsc.edu
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%+++++++++++++++++++++++++++++++++
+% Preamble and global declarations
+%+++++++++++++++++++++++++++++++++
+\documentclass[landscape]{slides}
+
+%\usepackage{amsmath}
+%\usepackage{amssymb}
+%\usepackage{amstext}
+%\usepackage{mathpartir}
+
+\input{slide-macros}
+
+%++++++++++++++++++++
+% The document itself
+%++++++++++++++++++++
+\begin{document}
+
+%-----------------------
+% Title page information
+%-----------------------
+\title{Ellipit Curve Cryptography}
+\author{Peter C. Chapin}
+\date{Spring 2012}
+\maketitle
+
+%%%%%
+
+\startslide{Public Key Cryptography}
+
+A public/private key pair $(K_p, K_r)$ can be easily generated. However, computing $K_r$ from
+$K_p$ is computationally infeasible.
+
+Security depends on ``hard'' mathematical problems.
+\begin{itemize}
+\item RSA depends on the problem of factoring large numbers into primes
+\item ElGamal depends on the discrete logarithm problem
+\item ECC depends on the elliptic curve discrete logarithm problem
+\end{itemize}
+
+No ``efficient'' algorithm is known to solve any of these on a conventional
+computer.
+
+\stopslide
+
+%%%%%
+
+\startslide{Public Key Cryptography}
+
+A message encrypted with $K_p$ can only be decrypted with $K_r$. Thus $K_p$ can be made public
+(posted on web sites, etc).
+
+$C = E(K_p, M)$ \\
+$M = D(K_r, C)$
+
+Knowing $K_p$ does not help an attacker compute $K_r$ messages encrypted with $K_p$.
+
+Many systems (including ECC) allow signatures to be created using $K_r$ that can be verified
+with $K_p$.
+
+Anyone can check a signature; only one person can create it.
+
+\stopslide
+
+%%%%%
+
+\startslide{Prime Fields}
+
+Given prime $p$, the \textit{prime field} $F_p$ is:
+\begin{itemize}
+\item The values $\{ 0, 1, 2, \ldots, p - 1 \}$
+\item The operation $+$ that is integer addition modulo $p$
+\item The operation $\times$ that is integer multiplication modulo $p$
+\end{itemize}
+
+All the field properties are satisfied. The value $0$ is the additive identity. The value $1$ is
+the multiplicative identity.
+
+\stopslide
+
+%%%%%
+
+\startslide{Prime Field Examples}
+
+Consider $F_7$
+
+\begin{itemize}
+\item $5 + 5 = 3$ because $(5 + 5)\,\, \textrm{mod}\,\, 7 = 3$
+\item $5 \times 5 = 4$ because $(5 \times 5)\,\, \textrm{mod}\,\, 7 = 4$
+\item $5^4 = 2$ because $625\,\, \textrm{mod}\,\, 7 = 2$
+\item $5 + 2 = 0$ thus $2$ is the \textit{additive inverse} of $5$
+\item $5 \times 3 = 1$ thus $3$ is the \textit{multiplicative inverse} of $5$
+\end{itemize}
+
+Every field value has an additive inverse.
+
+Every field value except $0$ has a multiplicative inverse.
+
+\stopslide
+
+%%%%%
+
+\startslide{Large Prime Fields}
+
+In ECC we are interested in prime fields for very large primes. For example
+
+$2^{191} \le p < 2^{192}$
+
+Here $p$ is a 192~bit prime. This is currently the smallest recommended size.
+
+Computation with such large numbers requires special software. Native processor instructions
+usually limited to 8, 16, 32, or 64~bit.
+
+ECC can also use \textit{binary fields}, but I do not describe them further here.
+
+\stopslide
+
+\end{document}

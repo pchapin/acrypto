@@ -1,0 +1,32 @@
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\command}[1]{\texttt{#1}}
+\newcommand{\filename}[1]{\texttt{#1}}
+\newcommand{\newterm}[1]{\textit{#1}}
+
+\long\def\pnote#1{\marginpar{\color{blue}{PC}}{\small \ \ $\langle\langle\langle$\
+{#1 - PC}\
+    $\rangle\rangle\rangle$\ \ }} 
+
+% This macro is for text figures (program listings). Use as follows:
+% \begin{figure}[htbp]
+% \begin{textbox}{3in}  % The width of the text.
+% \begin{Verbatim}
+% ...
+% \end{Verbatim}
+% \end{textbox}
+% \caption{...}
+% \label{...}
+% \end{figure}
+%
+\newsavebox{\savebigbox}
+\newenvironment{textbox}[1]{
+  \begin{lrbox}{\savebigbox}
+  \begin{minipage}{#1}
+  \vspace{1.0em}
+}
+{
+  \vspace{0.50em}
+  \end{minipage}
+  \end{lrbox}\framebox[\textwidth]{\hfill\fbox{\usebox{\savebigbox}}\hfill}
+}

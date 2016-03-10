@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.docbook.org/xml/4.5/docbookx.dtd">
+  
+<section id="ACO-Crypto-Block_Cipher">
+  <title>Package ACO.Crypto.Block_Cipher</title>
+
+  <para>The package <package>ACO.Crypto.Block_Cipher</package> (full Ada) contains the
+    definition of a root <type>Block_Cipher</type> type along with its associated primitive
+    operations.</para>
+
+  <synopsis>
+    type Block_Cipher is abstract new Ada.Finalization.Controlled with private;
+    type Block_Cipher_Access is access all Block_Cipher'Class;
+    
+    function Block_Size(B : Block_Cipher) return Natural is abstract;
+    
+    -- In-place form.
+    procedure Encrypt(B : in out Block_Cipher; Block : in out Octet_Array);
+    procedure Decrypt(B : in out Block_Cipher; Block : in out Octet_Array);
+    
+    -- Copying form.
+    procedure Encrypt
+       (B            : in out Block_Cipher;
+        Input_Block  : in     Octet_Array;
+        Output_Block : out    Octet_Array);
+    
+    procedure Decrypt
+       (B            : in out Block_Cipher;
+        Input_Block  : in     Octet_Array;
+        Output_Block : out    Octet_Array);
+  </synopsis>
+
+  <para>The main <type>Block_Cipher</type> type specifies the protocol that must be used with
+    block cipher objects. This protocol is quite simple: to encrypt a block one of the
+      <function>Encrypt</function> procedures must be used, and to decrypt a block one of the
+      <function>Decrypt</function> procedures must be used. Each type derived from
+      <type>Block_Ciper</type> provides its own initialization procedure, if necessary.</para>
+
+  <para>There are in-place and copying forms of the encryption and decryption procedures. The
+    in-place form performs its operation on the block in place, overwriting the input block with
+    the result. The copying form writes its result to a new block and treats its input as
+    read-only. Both forms are provided for all <type>Block_Cipher</type> types so that whichever
+    form is more convenient can be used.</para>
+
+  <para>In the <type>Block_Cipher</type> type the in-place forms are implemented in terms of the
+    copying forms and visa-versa. Thus derived types need only override one of the forms and can
+    inherit the other form as necessary. Since different ciphers may be more naturally
+    implemented as in-place or as copying, this approach allows the author of a derived type the
+    flexibility of implementing whichever form is most natural for that type. Note that using an
+    "unnatural" form will most likely cause extra copying to be done. Thus for maximum
+    efficiency the developer will want to know which approach is best for the particular ciphers
+    being used. However, all ciphers will provide both forms (perhaps by way of inheritance) so
+    that correct programs can be written either way.</para>
+
+  <warning>
+    <para>When implementing a type derived from <type>Block_Cipher</type> at least one of the
+      two forms <emphasis>must</emphasis> be implemented. If both forms are inherited any
+      attempt to encrypt or decrypt a block will result in an infinite recursion as the
+      inherited forms call each other. However, creating a <type>Block_Cipher</type> without
+      implementing at least one form of encryption and decryption should be rare. This warning
+      mostly applies to people writing their own null ciphers or who are creating stubs during
+      program development<footnote>
+        <para>Design Note: It would be safer to declare the encryption and decryption procedures
+          in <type>Block_Cipher</type> as <code>abstract</code> and force each downstream
+          implementor to provide both forms, implementing one in terms of the other explicilty
+          as necessary.</para>
+      </footnote>.</para>
+  </warning>
+
+  <para>In the copying forms if the output buffer is a different size than the input buffer, the
+      <exceptionname>Constraint_Error</exceptionname> exception is raised.</para>
+
+  <para>Normally a given <type>Block_Cipher</type> instance can be in either encryption mode or
+    decryption mode. The <type>Block_Cipher</type> interface does not specify how this mode is
+    selected. It may be part of the instance's initialization or it may be automatic with the
+    first operation applied to the instance defining its mode. In general
+      <type>Block_Cipher</type> instances can not change mode during their lifetime, although
+    some derived types may provide a way to reinitialize the instance into a different mode.
+    However, some <type>Block_Cipher</type> types may be modeless and can be switched between
+    encryption mode and decryption mode freely. In any case, if an attempt is made to use the
+    wrong mode, for example by calling <function>Decrypt</function> on an instance in encryption
+    mode, the <exceptionname>ACO.Crypto.Bad_Cipher_Mode</exceptionname> exception is
+    raised.</para>
+
+  <para>Function <function>Block_Size</function> returns the size of the block in bits.</para>
+
+  <synopsis>
+    type CBC_Mode is new Block_Cipher with private;
+    
+    not overriding
+    procedure Make
+       (B          : out CBC_Mode;
+        Underlying : in  Block_Cipher_Access;
+        IV         : in  Octet_Array);
+  </synopsis>
+
+  <para>The type <type>CBC_Mode</type> is a wrapper around <type>Block_Cipher</type> that
+    implements the cyclic block chaining (CBC) encryption mode. It provides the protocol of a
+      <type>Block_Cipher</type> and is initialized with procedure <function>Make</function>. The
+    initialization takes an access value that references an underlying <type>Block_Cipher</type>
+    instance and an initialization vector with a size equal to the underlying cipher's block
+    size (else <exceptionname>Bad_Block_Size</exceptionname> is raised). Once initialized a
+      <type>CBC_Mode</type> object can be used like any other <type>Block_Cipher</type>.
+    However, be aware that CBC mode retains information about past encryptions so the order in
+    which blocks are processed by a <type>CBC_Mode</type> instance is significant.</para>
+
+  <para>Note that when a <type>CBC_Mode</type> instance is finalized the underlying
+      <type>Block_Cipher</type> instance is not modified. Only the additional resources required
+    for the CBC mode implementation are released.</para>
+
+  <section id="ACO-Crypto-Block_Cipher-None">
+    <title>Package ACO.Crypto.Block_Cipher.None</title>
+
+    <synopsis>
+      type Null_Cipher is new Block_Cipher with private;
+
+      not overriding
+      procedure Make(B : out Null_Cipher; Block_Size : in Natural);
+    </synopsis>
+
+    <para>The <package>ACO.Crypto.Block_Cipher.None</package> provides a concrete type
+        <type>Null_Cipher</type>. Instances of this type obey the <type>Block_Cipher</type>
+      interface but perform no computations. They can be used as a place holder when a block
+      cipher is needed by the software and yet no encryption is desired.</para>
+
+    <para>The <function>Make</function> procedure allows a <type>Null_Cipher</type> to be
+      initialized with any desired block size. This allows <type>Null_Cipher</type> instances to
+      be used with software expecting various block sizes.</para>
+  </section>
+
+  <section id="ACO-Crypto-Block_Cipher-AES">
+    <title>Package ACO.Crypto.Block_Cipher.AES</title>
+
+    <synopsis>
+      type AES_Cipher is new Block_Cipher with private;
+      
+      not overriding
+      procedure Make(B : out AES_Cipher; Key : in Octet_Array);
+    </synopsis>
+
+    <para>The <package>ACO.Crypto.Block_Cipher.AES</package> provides a concrete type
+        <type>AES_Cipher</type> that implements the AES encryption algorithm. This type obeys
+      the <type>Block_Cipher</type> interface and also provides a <function>Make</function>
+      procedure that initializes <type>AES_Cipher</type> instances. The
+        <function>Make</function> procedure takes the key to be used as an octet array.
+      Currently only 128 bit keys and 128 bit blocks are supported.</para>
+  </section>
+
+  <section id="ACO-Crypto-Block_Cipher-Blowfish">
+    <title>Package ACO.Crypto.Block_Cipher.Blowfish</title>
+
+    <synopsis>
+      type Blowfish_Cipher is new Block_Cipher with private;
+      
+      not overriding
+      procedure Make(B : out Blowfish_Cipher; Key : in Octet_Array);
+    </synopsis>
+
+    <para>The <package>ACO.Crypto.Block_Cipher.Blowfish</package> provides a concrete type
+        <type>Blowfish_Cipher</type> that implements the Blowfish encryption algorithm. This
+      type obeys the <type>Block_Cipher</type> interface and also provides a
+        <function>Make</function> procedure that initializes <type>Blowfish_Cipher</type>
+      instances. The <function>Make</function> procedure takes the key to be used as an octet
+      array. Note that Blowfish can not use just any key size. If an invalid key size is
+      provided, the exception <exceptionname>Bad_Key_Length</exceptionname> is raised.</para>
+
+    <para>The <type>Blowfish_Cipher</type> type is modeless. Unlike general
+        <type>Block_Cipher</type> instances, <type>Blowfish_Cipher</type> instances can be used
+      for both encryption and decryption without any explicit mode changes and without causing
+      the <exceptionname>Bad_Cipher_Mode</exceptionname> exception to be raised.</para>
+  </section>
+
+</section>

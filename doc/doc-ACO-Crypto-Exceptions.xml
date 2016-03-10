@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.docbook.org/xml/4.5/docbookx.dtd">
+  
+<section id="ACO-Crypto-Exceptions">
+  <title>Package ACO.Crypto.Exceptions</title>
+
+  <para>The package <package>ACO.Crypto.Exceptions</package> (full Ada) contains all the
+    exceptions and related subprograms used by the object oriented cryptographic
+    wrappers.</para>
+
+  <synopsis>
+    Bad_Cipher_Mode : exception;
+    Bad_Key_Length  : exception;
+    Bad_Block_Size  : exception;
+  </synopsis>
+
+  <para>The exception <exceptionname>Bad_Cipher_Mode</exceptionname> is raised if one tries to
+    use a cipher object inconsistently. For example attempting to decrypt data after the object
+    has already been committed to encryption mode. Also
+      <exceptionname>Bad_Cipher_Mode</exceptionname> is raised if the object is used
+    uninitialized.</para>
+
+  <para>the exception <exceptionname>Bad_Key_Length</exceptionname> is raised if one tries to
+    initialize a cipher with a key having an inappropriate length for that cipher.</para>
+
+  <para>The exception <exceptionname>Bad_Block_Size</exceptionname> is raised if a block of the
+    wrong size is given to a <type>Block_Cipher</type> for encryption or decryption.</para>
+
+</section>

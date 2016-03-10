@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!-- FILE   : pchapin.xht
+     SUBJECT: -->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+  <head>
+    <meta name="Author" content="Peter C. Chapin"/>
+    <meta name="ROBOTS" content="NOARCHIVE"/>
+    <link rel="stylesheet" href="aco.css" type="text/css"/>
+
+    <title>pchapin's ACO Blog</title>
+  </head>
+
+  <body>
+    <h1>pchapin's ACO Blog</h1>
+
+    <h2>Sunday, March 25, 2012: Algorithm D</h2>
+
+    <p>I've been enhancing ACO's support for extended precision integers in a number of ways. In
+      particular</p>
+
+    <ul>
+
+      <li><p>I now support 192 bit integers instead of 160 bit integers. Current documentation
+        on elliptic curve cryptography suggests that 160 bit keys are no longer considered
+        secure.</p></li>
+
+      <li><p>I added support for addition and subtraction in the field F<sub>p</sub> (for 192
+        bit primes p). This is in anticipation of my intended ECC application.</p></li>
+
+      <li><p>All SPARK verification conditions for the previously defined subprograms have been
+        discharged. This proves they are free of runtime errors (won't throw any exceptions),
+        but does not prove that they necessarily compute the correct values.</p></li>
+
+      <li><p>I started implementing a division subprogram that will divide a 384 bit dividend by
+        a 192 bit divisor (producing a 384 bit quotient and a 192 bit remainder).</p></li>
+
+    </ul>
+
+    <p>For division I'm following Donald Knuth's "Algorithm D" in his book <i>The Art of
+      Computer Programming, Volume 2: Seminumerical Algorithms</i>. Currently I have an
+      implementation that appears to work and is acceptable to the SPARK Examiner, but it has
+      undischarged verification conditions.</p>
+
+    <p>Fully handling all VCs in my implementation of Algorithm D is likely to be challenging.
+      The problem is that the algorithm as published by Knuth (and at
+      least <a href="http://www.hackersdelight.org/HDcode/divmnu.c.txt">one other
+      implementation</a> I've seen on line) relies on the fact that the estimated quotient digit
+      <code>Q_Hat</code> is, after a couple of possible adjustments, really a single digit
+      number. There is a critical place in the algorithm where <code>Q_Hat</code> is stored in a
+      single digit storage area. Naturally SPARK wants to be sure it will fit and generates a VC
+      with a conclusion saying so.</p>
+
+    <p>Unfortunately the argument that allows one to conclude <code>Q_Hat</code> is a single
+      digit at that point is non-trivial. I haven't yet worked out the details myself, but it
+      appears to require fairly high level reasoning about what is going on in the algorithm.
+      Discharging the critical VC I mentioned above will therefor require conveying that
+      reasoning to the SPARK tools in some manner.</p>
+
+    <h2>Wednesday, September 8, 2010: The libsparkcrypto Library</h2>
+
+    <p>Recently Alexander Senier announced on comp.lang.ada his library of cryptographic
+      algorithms in SPARK called <a href="http://senier.net/libsparkcrypto/">libsparkcrypto</a>.
+      Based on the project's web page it looks like libsparkcrypto's basic goals overlap
+      considerably with my goals for ACO. Also at the moment libsparkcrypto contains a much
+      richer collection of algorithm implementations than the meager set in ACO and is more
+      polished than ACO. If you have an immediate need for a cryptography library in SPARK,
+      libsparkcrypto is in a better position to meet that need.</p>
+
+    <p>Of course who knows what the future will bring. ACO contains a collection of high level
+      object-oriented wrappers intended to abstract out various cryptographic interfaces in a
+      useful way. Those wrappers are not SPARK but for applications that don't need SPARK they
+      might be more convenient than interacting with the low level algorithms directly. Also my
+      long term plans for ACO entail supporting various cryptographic and security services
+      beyond "just" algorithm implementations. On the other hand talk is cheap. It is entirely
+      possible that those plans will never be realized.</p>
+
+    <p>In any case it is good to have options. When I started ACO it appeared to me that the
+      other Ada cryptographic libraries I found were either dead projects or did not have the
+      sort of algorithms I needed. It is good for the Ada ecology in general and for SPARK in
+      particular to have two SPARK cryptography libraries being actively developed. Since ACO is
+      primarily a hobby project for me, I don't mind reinventing the wheel as long as I'm having
+      fun doing it!</p>
+
+    <h2>Thursday, September 2, 2010: Extended Integer Support</h2>
+
+    <p>Several years ago I wrote, largely as an exercise, a general purpose extended precision
+      integer class for C++. Knowing that extended precision integers were needed for certain
+      cryptographic algorithms, I later translated my C++ class into Ada with the intention of
+      using it with ACO.</p>
+
+    <p>My original Ada version followed my C++ class's design and featured support for signed
+      integers of arbitrary size. This is fine as far as it goes, but the implementation also
+      used dynamic memory allocation (via the Ada 2005 Vectors package). When I decided to
+      implement the core algorithms in ACO using SPARK I needed to rework my extended integer
+      package to conform to SPARK rules. I removed the ability to dynamically resize the
+      integers and I also dropped support for negative integers. I don't believe I will need
+      negative values in my intended cryptographic applications (but we'll see).</p>
+
+    <p>The result is a package providing a type <code>Very_Long</code> that, currently, only
+      supports 160-bit unsigned values. All operations on a <code>Very_Long</code> object are
+      implicitly done modulo 2160. My choice of 160-bit values is tied to my immediate need. I
+      anticipate soon adding support in ACO
+      for <a href="http://en.wikipedia.org/wiki/Elliptic_curve_cryptography">elliptic curve</a>
+      based (ECC) public key algorithms. Such algorithms do their computations in an underlying
+      field such as F<sub>p</sub> for some large prime p. It turns out that 160-bit field sizes
+      provides reasonable security with ECC algorithms. Focusing on that size should be
+      sufficient for now.</p>
+
+    <p>Ultimately I would like to support various field sizes, of course, and also
+      use <code>Very_Long</code> objects to support other public key schemes besides ECC. A
+      secure application of the RSA algorithm, for example, needs much larger integers. However,
+      writing generalized SPARK code is a little tricky because SPARK currently supports neither
+      generics nor object oriented techniques. Since everything in SPARK needs to be statically
+      sized it seems likely that a general purpose <code>Very_Long</code> type would need to
+      always allocate enough memory for the largest values that would ever be needed. Of course
+      this is an inefficient use of memory for applications that need only small values. My plan
+      is to address this issue at a later time.</p>
+
+    <h2>Friday, February 19, 2010: Development Site Moved to Assembla</h2>
+
+    <p>I moved the development site for ACO from SourceForge to Assembla. I have nothing against
+      SourceForge, but I'm using Assembla for another project
+      (the <a href="http://www.assembla.com/spaces/cubesatlab/">VTC CubeSat Laboratory</a>), and
+      I find that I like it fairly well. Assembla feels lighter weight than SourceForge and that
+      seems like a better fit for a small scale project of this nature. Also Assembla's site
+      does not use ads which provides a nicer experience for visitors.</p>
+
+    <p>The Assembla site is a little rough at the moment. I hope to get it configured in the
+      next few weeks. I also hope to pick up the pace of development on ACO itself. This work
+      deserves more attention than I've been giving it recently.</p>
+
+    <p>The old SourceForge site still exists and is basically frozen. SourceForge's policy is to
+      hold moved projects in an archived state for reference purposes. That seems like a
+      reasonable policy. In fact, I could even imagine moving ACO development back to
+      SourceForge at some future time depending on how things unfold.</p>
+
+    <h2>Wednesday, October 21, 2009: Draft SHA-1 Implementation</h2>
+
+    <p>I recently committed a draft implementation of the SHA-1 hash algorithm to the ACO
+      repository. This implementation is only a draft because it currently lacks any test cases
+      and documentation. I thus consider it to be incomplete at this time. However, this is the
+      first activity in the ACO project in a while so I thought it would be good to post a
+      message about it anyway. I am alive! Hopefully I will be able to make steady progress from
+      now on.</p>
+
+    <p>My SHA-1 implementation follows as directly as possible the description of the primary
+      algorithm given in <a href="http://www.itl.nist.gov/fipspubs/fip180-1.htm">FIPS 180-1</a>.
+      My idea was to create an implementation that could eventually be proved correct with
+      respect to the specification. I assumed that would be easier if I followed the
+      specification as literally as possible. Alas, constructing a proof of correctness will be
+      complicated by the fact that the specification isn't as formal as one might like. I will
+      worry about that problem later. In the meantime it is my hope that my implementation is at
+      least easy to review manually.</p>
+
+    <p>Ultimately I would also like to provide an implementation of the low memory consuming
+      "alternate" algorithm described in FIPS 180-1. Of course it will additionally be necessary
+      to formally show that the alternate algorithm produces the same result as the primary
+      algorithm (FIPS 180-1 doesn't really do this), and that my implementation of it is correct
+      with respect to its specification. What fun!</p>
+
+    <h2>Tuesday, February 10, 2009</h2>
+
+    <p>I decided to try using SPARK after I had already started the design of the ACO library
+      and implemented one encryption algorithm (Blowfish). Once I decided to use SPARK for the
+      core algorithms, I knew that I needed to refactor my existing code to make it conform to
+      SPARK rules. I wasn't sure how that was going to work out so I felt the refactoring had to
+      be done right away to ensure that it was even going to be possible.</p>
+
+    <p>I just completed the refactoring yesterday. I had to rearrange a number of packages, as
+      expected, but overall it went fine and the resulting code is quite reasonable. The main
+      tricky aspect was related to the intrinsic shift procedures. GNAT
+      provides <code>Shift_Left</code> and
+      <code>Shift_Right</code> procedures as "intrinsics" in package <code>Interfaces</code>.
+      This means that they are compiled directly into single machine instructions without
+      procedure call overhead. However, I didn't want to use the types defined in
+      package <code>Interfaces</code> because I wanted to use representation clauses to define
+      the properties of my basic types precisely (specifically, the size). Such clauses must
+      appear in the same package as where the type is defined, and I don't have the option of
+      editing the library package <code>Interfaces</code>.</p>
+
+    <p>However, my benchmark experiments with Blowfish showed that it was very important to
+      performance to use the intrinsic procedures. Correctness may have first priority in ACO,
+      but performance is important too. I didn't feel like I could worry about this matter
+      later. Fortunately GNAT allows me to specify procedures of my own as intrinsic provided
+      the procedures have the proper names and operate on types with appropriate properties.
+      This allowed me to define <code>Shift_Left</code> and <code>Shift_Right</code> procedures
+      for my type <code>ACO.Octet</code> while retaining the speed of the intrinsic
+      operations.</p>
+
+    <p>The complication that arose was that I also wanted to do the same for the
+      types <code>ACO.Double_Octet</code>, <code>ACO.Quadruple_Octet</code>,
+      and <code>ACO.Octuple_Octet</code>. To make all the necessary shifts intrinsic I had to
+      use particular procedure names. However, SPARK does not allow overloading of procedure
+      names so this created a conflict between SPARK rules and my desire for an efficient
+      implementation. To work around this, I created separate packages for the operations on
+      each type. This caused something of a proliferation of packages, but it worked out to be a
+      reasonable approach.</p>
+
+    <p>I also factored out the core algorithms from the object oriented interfaces so that the
+      core algorithms could be made SPARKable while still retaining the convenient interfaces
+      for users who want them. This went smoothly. There is now slightly more overhead involved
+      when using the object oriented interfaces than there used to be because of the extra layer
+      of procedure calling involved. However, benchmark tests on Blowfish show only a slight
+      slowdown due to this effect. The beauty of this approach is that while the main algorithms
+      are (will be) SPARKable, the high level interfaces made available by the library can
+      continue to use full Ada 2005.</p>
+
+    <p>So far I have only applied flow annotations to the packages that I intend to be
+      SPARKable. This helps increase confidence in those packages somewhat, but I believe the
+      real gain in reliability will come when I start using the proof annotations. I intend to
+      put that off for a while, however, until the library has been fleshed out a bit more. Yet
+      even the flow annotations are useful. They forced me to properly check error status on all
+      called procedures; something I hadn't been doing consistently before.</p>
+
+    <p>I feel that now the basic structure of ACO is complete and what remains is mostly a
+      matter of building on that structure with actual algorithm implementations. I will
+      probably continue by implementing SHA1 next.</p>
+
+    <h2>Tuesday, November 18, 2008: Testing Crypto Implementations</h2>
+
+    <p>How does one test an implementation of a cryptographic algorithm? This question is
+      surprisingly tricky. In general many algorithms have at least some easy to determine
+      correct results, so writing test cases for them is relatively straight forward. For
+      example consider red-black trees. If one inserts a collection of integers into a red-black
+      tree it is easy to see that a search operation on one of those integers should succeed.
+      The test case author can now focus on writing test cases that search for particularly
+      "interesting" integers so the insertion and search code are well exercised. However, the
+      output of an encryption algorithm looks indistinguishable from random data. How can one
+      know what the correct "random" data should be? Of course one could decrypt the result of
+      encryption and verify that it agrees with the original input. Such round trip testing is
+      certainly valuable but it's not enough. A round trip might succeed even though the
+      ciphertext produced by the encryption is wrong. The implementation of decryption would
+      have to be flawed in a complementary way, but it is easy to imagine that happening.</p>
+
+    <p>It seems like the only way to really test the validity of an encryption implementation is
+      to check its output against a known correct implementation. The problem is how do we know
+      a correct implementation when we see it? Certainly if multiple independently written
+      implementations produce the same output that increases confidence in the correctness of
+      all of them. However, how many implementations of an algorithm are really independently
+      written?</p>
+
+    <p>For example, the <a href="http://www.schneier.com/blowfish.html">Blowfish</a> algorithm
+      is initialized with 4168 digits from the hexadecimal expansion of Pi. The implementation
+      of Blowfish currently in ACO uses the values for those digits that
+      are <a href="http://www.schneier.com/code/constants.txt">posted on Bruce Schneier's web
+      site</a>. As a result ACO's implementation of Blowfish is not 100% independent of
+      Schneier's. If those digits of Pi are wrong, we are both wrong in the same way. Even when
+      multiple implementations of an algorithm are written independently there is still a
+      possibility of them all making the same error, each on their own. While this might seem
+      unlikely, it is certainly conceivable.</p>
+
+    <p>Published cryptographic algorithms are analyzed for security using mathematical methods.
+      That analysis is done based on the published formal description of the algorithm. In order
+      to ensure that an implementation of a cryptographic algorithm actually provides the
+      security the theoretical results suggest, it is important to be using code that actually
+      implements the algorithm's specification correctly. No amount of checking against other
+      implementations will verify that the formal mathematical specification is being followed.
+      Thus I submit that one should instead try to prove that an implementation is correct using
+      formal methods.</p>
+
+    <p>It is for this reason that I intend to use the SPARK tools during the development of ACO.
+      Although ACO is not at this point yet, I hope to eventually use SPARK to formally prove
+      the correctness of all the core algorithms in the library. Of course formal proof at the
+      level of the source code will not find errors in the compiler's code generator, or in
+      numerous other places where errors might arise. Thus I fully intend to also check ACO's
+      output against other implementations. It is my hope that the combination of testing and
+      formal proof will give users a high level of confidence that ACO library actually provides
+      the security assurances claimed by the published mathematical analysis.</p>
+
+    <h2>Saturday, November 15, 2008: Introduction</h2>
+
+    <p>This is a blog about the <a href="http://adacrypto.sourceforge.net/">Ada Cryptographic
+      Objects</a> (ACO) library and all things related to it. ACO is a pet project of mine to
+      build a high quality crypto library in Ada. I have a number of Ada projects in mind that
+      could use cryptography and for various reasons none of the existing free crypto libraries
+      really suited my tastes. In any case, as a hobby project this effort is not necessarily
+      about quick development or maximum software reuse. Rather this project is just for my own
+      enjoyment. Using other people's code, while highly practical, isn't nearly as much fun as
+      writing my own.</p>
+
+    <p>Right now ACO is in its early stages. Most of my work has been focused on organizing the
+      library rather than actually implementing cryptographic algorithms. I believe this is as
+      it should be since I want to create a good foundation for the library before spending a
+      lot of time writing the wrong code. I am using
+      the <a href="https://libre2.adacore.com/aunit/">AUnit</a> unit test framework for my unit
+      tests, I am building benchmark programs to check the performance of my algorithm
+      implementations, and I am writing detailed documentation for ACO as I write the code. I
+      hate dealing with software that has incomplete documentation and I don't want ACO to have
+      that problem.</p>
+
+    <p>My plan is also to use the <a href="http://www.praxis-his.com/sparkada/">SPARK</a> tool
+      set to analyze my implementation of the core algorithms. SPARK is a powerful static
+      analysis tool that can be used, for example, to help prove the correctness of one's code.
+      I'm not sure right now how far I will take my use of SPARK; I'm using it here partly to
+      learn about SPARK's issues and capabilities.</p>
+
+    <p>Right now <a href="http://sourceforge.net/projects/adacrypto/">ACO lives on
+      SourceForge</a>. I have been using the developers forum there to make notes about my work
+      as I go along. My thought was that if another developer joins me in the future he or she
+      might want to review those notes to get a better understanding of my design decisions and
+      why I made them. After making a few entries in the developers forum, I realized that I
+      probably really should be posting such material in a public place. Others who are
+      interested in Ada, cryptography, or highly reliable software might be interested in
+      following or commenting on ACO's development. It is in that spirit that I created this
+      blog.</p>
+
+    <!-- BEGIN signature block -->
+    <hr/>
+    <address>
+      &copy; Copyright 2012 by Peter C. Chapin.<br/>
+      Last Revised: <b>April 22, 2012</b>
+    </address>
+    <!-- END signature block -->
+  </body>
+</html>

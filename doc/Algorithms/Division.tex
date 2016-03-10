@@ -1,0 +1,215 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FILE    : Division.tex
+% SUBJECT : An algorithm for multi-precision division.
+% AUTHOR  : (C) Copyright 2014 by Peter C. Chapin <PChapin@vtc.vsc.edu>
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% ++++++++++++++++++++++++++++++++
+% Preamble and global declarations
+% ++++++++++++++++++++++++++++++++
+\documentclass{article}
+
+% --------
+% Packages
+% --------
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{fancyvrb}
+\usepackage[pdftex]{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{url}
+
+% The following are settings for the listings package
+\lstset{language=Ada,
+        basicstyle=\small,
+        stringstyle=\ttfamily,
+        commentstyle=\ttfamily,
+        xleftmargin=0.25in,
+        showstringspaces=false}
+
+
+% ------------------
+% Layout adjustments
+% ------------------
+% Avoid changing the layout; it is usually set via the document class (or in packages).
+%
+%\pagestyle{headings}
+%\setlength{\parindent}{0em}
+%\setlength{\parskip}{1.75ex plus0.5ex minus0.5ex}
+
+
+% ------
+% Macros
+% ------
+\input{macros}
+
+
+% +++++++++++++++++++
+% The document itself
+% +++++++++++++++++++
+\begin{document}
+
+% ----------------------
+% Title page information
+% ----------------------
+\title{Multiprecision Division}
+\author{Peter C. Chapin\thanks{PChapin@vtc.vsc.edu}\\
+  Vermont Technical College}
+\date{September 7, 2014}
+\maketitle
+
+% ------------
+% Main Content
+% ------------
+
+\section{Introduction}
+\label{sec:introduction}
+
+Cryptographic algorithms, particularly public key algorithms, often need to manipulate integers
+that are much larger than the natural word size of the processor. These \textit{multiprecision}
+operations are done with specialized subprograms, sometimes using special, high efficiency
+algorithms.
+
+This document describes a ``classic'' multiprecision division algorithm of the sort taught to
+grade school children except cast in a precise mathematical form. The algorithm presented here
+is essentially the same as presented in \cite{knuth-seminumerical}. I have provided additional
+commentary relevant to ACO's use of this algorithm in its support for elliptic curve
+cryptography.
+
+\section{Inputs and Outputs}
+\label{sec:inputs-outputs}
+
+We consider only natural numbers (non-negative integers). ACO does not currently require the
+division of signed numbers. If that becomes necessary the sign can be managed separately and so
+need not affect the algorithm presented here.
+
+We will represent our numbers in a base $b$ where $b$ is any convenient value, typically a power
+of two. The size of $b$ should be chosen to facilitate computation by being a natural size for
+the underlying machine. Here ``natural size'' means a size that fits into the machine's
+registers and for which the machine supports primitive arithmetic operations. For example if
+eight bit primitive operations are to be used, then $b = 2^8 = 256$.
+
+A large value of $b$ such as $b = 2^{16}$ or $b = 2^{32}$ might result in faster computations by
+allowing more bits of the number to be processed at once (thus reducing the number of times
+various loops execute). However, in the examples that follow I will assume $b = 256$.
+
+If $b$ is a power of two then a large binary number can be written as a sequence of base $b$
+digits by just partitioning the bits of that number into groups where each group contains
+$\log_2 b$ bits. For example if $b = 256$ then each ``digit'' of the number is a group of eight
+bits. Thus a 192~bit number has 24 base 256 digits and a 384~bit number has 48 base 256 digits.
+
+The algorithm below describes how to compute $u/v$ where $v$ can be written as a sequence of $n$
+base $b$ digits $(v_{n-1}\ldots v_1 v_0)$ and where $u$ can be written as a sequence of
+$m + n$ base $b$ digits $(u_{m+n-1}\ldots u_1 u_0)$. The algorithm requires that the most
+significant digit of $v$, $v_{n-1}$, be non-zero.
+
+In our case we are interested in dividing a 384~bit (48~digit) dividend by a 192~bit (24~digit)
+divisor. However, the first step will be finding the most significant non-zero digit of the
+divisor; it might not be digit 23. For example, suppose that the divisor is really a 20 digit
+number (with leading zeros to fill it out to 192 bits). In that case $n = 20$ and we can write
+$48 = m + 20$ giving $m = 28$. The quotient is at most an $m + 1$ digit number $(q_m
+q_{m-1}\ldots q_0)$ and the remainder is at most an $n$ digit number $(r_{n-1}\ldots r_1 r_0)$.
+
+The ACO library allows numbers of arbitrary sizes (up to 8192~bits) in 8~bit units. However, the
+current implementation of division requires the dividend to be twice the length of the divisor
+(not considering the possibility of leading zero digits). This is enforced by a precondition.
+
+Notice that $n$ must be at least one since $n = 0$ implies that the divisor is zero which is
+undefined.
+
+\section{Algorithm}
+
+The following algorithm given by Knuth \cite{knuth-seminumerical} as ``Algorithm D'' requires
+that the number of significant digits in the divisor be strictly greater than one. The case
+where the divisor is a single digit must be handled by a separate (simpler) algorithm.
+
+Proceed as follows.
+
+\begin{enumerate}
+
+\item \textbf{D0.} Compute $n$ and $m$. Examine the divisor $v$ and find the most significant
+  non-zero digit. This is digit $n - 1$ (the least significant digit is digit zero). Compute $m$
+  from the formula $L = m + n$ where $L$ is the length of the dividend in digits. If $n = 0$
+  return a divide by zero error indication.
+
+\item \textbf{D1.} Normalize. Find the number of bit positions $v_{n-1}$ must be shifted to the
+  left to move a one bit into the most significant position of $v_{n-1}$. Call this shift
+  distance $s$. Set $d \leftarrow 2^s$ and multiply $u$ and $v$ by $d$.
+
+  This multiplication can be accomplished by doing a left shift of $s$ bits in every digit of
+  $u$ and $v$, starting from the least significant digit, taking care to move bits properly
+  across the digit boundaries. The value in $v$ will remain $n$ digits long since $s$ was chosen
+  to prevent it from overflowing, but the value in $u$ might require an additional digit.
+
+\item \textbf{D2.} Initialize $j$. Set $j \leftarrow m$.
+
+\item \textbf{D3.} Calculate $\hat{q}$, the estimated quotient digit. Set $\hat{q} \leftarrow
+  \lfloor(u_{j+n}b + u_{j+n-1})/v_{n-1}\rfloor$ and set $\hat{r} \leftarrow (u_{j+n}b +
+  u_{j+n-1}) \mod v_{n-1}$. Test: if $\hat{q} = b$ or $\hat{q}v_{n-2} > b\hat{r} + u_{j+n-2}$
+  then $\hat{q} \leftarrow \hat{q} - 1$ and $\hat{r} \leftarrow \hat{r} + v_{n-1}$. Repeat the
+  test (just once, not in a loop) if it results in $\hat{r} < b$.
+
+\item \textbf{D4.} Multiply and subtract. Replace $(u_{j+n}u_{j+n-1}\ldots u_j)$ by
+$$
+(u_{j+n}u_{j+n-1}\ldots u_j) - \hat{q}(0v_{n-1}\ldots v_1 v_0)
+$$
+If the result is negative let the computation ``wrap around'' but remember that a borrow was
+necessary.
+
+\item \textbf{D5.} Test remainder. Set $q_j \leftarrow \hat{q}$. If a borrow was necessary in
+  D4, go to D6, otherwise go to D7.
+
+\item \textbf{D6.} Add back. $q_j \leftarrow q_j - 1$. Add $(0v_{n-1}\ldots v_1 v_0)$ into
+  $(u_{j+n}u_{j+n-1}\ldots u_j)$. Ignore the carry that results (it undoes the earlier borrow).
+  The probability that this step is needed is approximately $2/b$ so special test cases are
+  needed to exercise it.
+
+\item \textbf{D7.} Loop on $j$. Set $j \leftarrow j - 1$. If $j \ge 0$ go to D3.
+
+\item \textbf{D8.} Unnormalize. Now $(q_m\ldots q_1 q_0)$ is the desired quotient. To obtain the
+  desired remainder divide $(u_{n-1}\ldots u_1 u_0)$ by $d$ (using a multi-digit right shift
+  operation).
+
+\end{enumerate}
+
+\section{Translation Notes}
+
+The ACO library implements extended precision integers using a discriminated type containing an
+array to hold the digits. Because of limitations on the way a discriminate can be used, the
+array is necessarily indexed starting at one. This conflicts with the description above which
+uses a starting index for digits of zero. To interpret the code it is helpful to keep the
+following in mind.
+
+First the values of $n$ and $m$ above are the same as used by the code. However, the value of
+$j$ that above loops from $m$ down to $0$ is different in the code where it loops from $m + 1$
+down to $1$. This means that when arrays are indexed by an expression involving $j$ they already
+have an extra $+1$ offset correcting for the different starting index used by the code. However,
+arrays that do not use $j$ in their index expressions \emph{may} need an addition $+1$ to offset
+the index value from that shown above to that required by the code.
+
+The important exception is for arrays indexed by a loop counter that ranges over
+\texttt{Digit\_Index\_Type}. That type also starts at one and such loop counters will thus
+contain an ``extra'' $+1$ as well. In the case where both $j$ and a loop counter appear in an
+index expression there are two extra $+1$ terms involved and an explicit $-1$ needs to be added
+to correct for one of them.
+
+For example if the description of the algorithm above uses an index expression of $j+n$ the code
+also uses $j+n$ because the $j$ used by the code is already one more than the $j$ defined in
+this document. However if the algorithm uses an index expression of $n-1$ the code uses $n$
+since the code needs an extra $+1$ offset for indicies. Similarly an index expression of $n-2$
+above is translated to $n-1$ in the code whereas an index expression of $j+n-1$ above is
+translated to $j+n-1$ because the $j$ in the code already has the necessary additional offset.
+
+We understand this is more confusing than it needs to be. It would be much easier if Ada allowed
+discriminated records with array bounds using expressions. The natural translation of the
+algorithm above would be to declare \texttt{Long\_Digits} with bounds of \texttt{0 ..
+  Digit\_Length - 1}. Unfortunately the use of \texttt{Digit\_Length - 1} is illegal in that
+context.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

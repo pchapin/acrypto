@@ -1,0 +1,23 @@
+Path: news.sover.net!master.readnews.com!spool-big3.readnews.com!news-out.readnews.com!transit4.readnews.com!postnews.google.com!news3.google.com!proxad.net!feeder1-2.proxad.net!194.25.134.126.MISMATCH!newsfeed01.sul.t-online.de!t-online.de!news.belwue.de!LF.net!news.enyo.de!not-for-mail
+From: Florian Weimer <fw@deneb.enyo.de>
+Newsgroups: comp.lang.ada
+Subject: Re: Interesting performance quirk.
+Date: Wed, 29 Oct 2008 21:18:04 +0100
+Lines: 8
+Message-ID: <87y707i29v.fsf@mid.deneb.enyo.de>
+References: <4903c066$0$28676$4d3efbfe@news.sover.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+X-Trace: idssi.enyo.de 1225311485 487 212.9.189.177 (29 Oct 2008 20:18:05 GMT)
+X-Complaints-To: 
+Cancel-Lock: sha1:IRjYEmFahOs5nMLpbF857pcAyMI=
+Xref: news.sover.net comp.lang.ada:23364
+
+* Peter C. Chapin:
+
+> I don't really have a question or a problem with any of this, but I
+> found it curious and I thought I'd post in case someone had some useful
+> insight into what might be going on.
+
+Is memory allocation or finalization involved in an inner loop?
+It might also help to compare -gnatdg output or assembly (-S).

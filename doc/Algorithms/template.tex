@@ -1,0 +1,74 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FILE    : FILE-NAME.tex
+% SUBJECT : BRIEF SUMMARY
+% AUTHOR  : (C) Copyright 2012 by Peter C. Chapin <PChapin@vtc.vsc.edu>
+%
+% OVERALL COMMENTS, IF ANY...
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% ++++++++++++++++++++++++++++++++
+% Preamble and global declarations
+% ++++++++++++++++++++++++++++++++
+\documentclass{article}
+
+% --------
+% Packages
+% --------
+\usepackage{color}
+\usepackage{fancyvrb}
+\usepackage[pdftex]{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{url}
+
+% The following are settings for the listings package
+\lstset{language=Ada,
+        basicstyle=\small,
+        stringstyle=\ttfamily,
+        commentstyle=\ttfamily,
+        xleftmargin=0.25in,
+        showstringspaces=false}
+
+
+% ------------------
+% Layout adjustments
+% ------------------
+% Avoid changing the layout; it is usually set via the document class (or in packages).
+%
+%\pagestyle{headings}
+%\setlength{\parindent}{0em}
+%\setlength{\parskip}{1.75ex plus0.5ex minus0.5ex}
+
+
+% ------
+% Macros
+% ------
+\input{macros}
+
+
+% +++++++++++++++++++
+% The document itself
+% +++++++++++++++++++
+\begin{document}
+
+% ----------------------
+% Title page information
+% ----------------------
+\title{TITLE}
+\author{Peter C. Chapin\thanks{PChapin@vtc.vsc.edu}\\
+  Vermont Technical College}
+\date{January 1, 2012}
+\maketitle
+
+% ------------
+% Main Content
+% ------------
+
+\section{Introduction}
+\label{sec:introduction}
+
+In this section...
+
+
+
+\end{document}

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.docbook.org/xml/4.5/docbookx.dtd">
+  
+<section id="ACO-Crypto">
+  <title>Package ACO.Crypto</title>
+
+  <para>The package <package>ACO.Crypto</package> (SPARK Ada) contains all the low level
+    cryptographic algorithms in this libary. These algorithms are categorized by various child
+    packages as described elsewhere in this document. The package <package>ACO.Crypto</package>
+    itself contains a few general purpose helper types that are useful to several different
+    child packages.</para>
+
+  <synopsis>
+    type Cipher_Mode is (Encrypt_Mode, Decrypt_Mode, Neither_Mode);
+  </synopsis>
+
+  <para>The type <type>Cipher_Mode</type> is used by the various cipher objects to track if they
+    are encrypting or decrypting their input data. Most cipher objects start in a neutral state
+      (<literal>Neither_Mode</literal>) but are then committed to encryption or decyrption after
+    they are initialized (or in some cases after they are first used). Once an object has been
+    committed to a particular mode, it can not usually be switched to a different mode. See the
+    detailed documentation for the child packages of <package>ACO.Crypto</package> for specific
+    exceptions to this rule.</para>
+
+</section>

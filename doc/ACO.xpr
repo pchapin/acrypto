@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="13.2">
+    <meta>
+        <filters directoryPatterns="" filePatterns="" positiveFilePatterns="" showHiddenFiles="false"/>
+        <options/>
+    </meta>
+    <projectTree name="ACO.xpr">
+        <file name="ACO-Documentation.xml"/>
+        <file name="doc-ACO-Access_Types.xml"/>
+        <file name="doc-ACO-Crypto-Algorithms.xml"/>
+        <file name="doc-ACO-Crypto-Block_Cipher.xml"/>
+        <file name="doc-ACO-Crypto-Exceptions.xml"/>
+        <file name="doc-ACO-Crypto-Hash.xml"/>
+        <file name="doc-ACO-Crypto-Stream_Cipher.xml"/>
+        <file name="doc-ACO-Crypto.xml"/>
+        <file name="doc-ACO-Math-Very_Longs.xml"/>
+        <file name="doc-ACO.xml"/>
+        <file name="doc-Build.xml"/>
+    </projectTree>
+</project>

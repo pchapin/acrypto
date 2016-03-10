@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.docbook.org/xml/4.5/docbookx.dtd">
+  
+<section id="ACO-Crypto-Hash">
+  <title>Package ACO.Crypto.Hash</title>
+
+  <para>The package <package>ACO.Crypto.Hash</package> contains the definition of a root
+      <interfacename>Hasher</interfacename> interface along with its associated primitive
+    operations. <package>ACO.Crypo.Hash</package> also declares a private type to represent the
+    hash values themselves in an abstract way.</para>
+
+  <synopsis>
+    type Hash_Value(&lt;&gt;) is private;   
+    function To_String(Value : Hash_Value) return String;
+  </synopsis>
+
+  <para>The type <type>Hash_Value</type> is an abstract representation of a hash value. It can
+    represent hash values of any length. The function <function>To_String</function> converts
+    hash values into a displayable form. The resulting string is in hex using upper case letters
+    'A' through 'F'. It also has an appropriate number of leading zeros, depending on the size
+    of the hash value itself. The string does <emphasis>not</emphasis> contain a prefix of "16#"
+    nor a "#" suffix. That is, the string is not in the form of an Ada hex literal. This allows
+    the application to add (or not) any prefix and/or suffix the application deems appropriate.</para>
+
+  <synopsis>
+    type Hasher is interface;
+    
+    procedure Start_Hashing(Hash_Object : in out Hasher) is null;
+    procedure Compute_Hash
+       (Hash_Object : in out Hasher; Data_Block  : in Octet_Array) is abstract;
+    procedure Finish_Hashing(Hash_Object : in out Hasher) is null;
+    function Retrieve_Hash(Hash_Object : Hasher) return Hash_Value is abstract;
+  </synopsis>
+
+  <para>The main <interfacename>Hasher</interfacename> interface specifies the protocol that
+    must be used with hasher objects. Before any hashing is attempted the procedure
+      <function>Start_Hashing</function> must be called. This procedure initializes the hasher
+    object. It can also be used to re-initialize an object that has been previously initialized.</para>
+
+  <para>Procedure <function>Compute_Hash</function> updates the hash value using the raw octets
+    provided in <parameter>Data_Block</parameter>. It is not necessary for the given data block
+    to be any specific size. In particular it need not be the natural block size of the
+    underlying hash function. The hasher object will buffer octets if necessary to handle
+    partial blocks.</para>
+
+  <para>When all the data has been processed the procedure <function>Finish_Hashing</function>
+    is called to finalize the hash value. After <function>Finish_Hashing</function> has been
+    called, no further calls to <function>Compute_Hash</function> are allowed.</para>
+
+  <para>The actual hash value is obtained by calling function
+    <function>Retrieve_Hash</function>. This function can only be called after
+      <function>Finish_Hashing</function> has been called. However,
+    <function>Retrieve_Hash</function> can be called multiple times. In effect, the hasher
+    object is read-only once <function>Finish_Hashing</function> has been called on it.</para>
+
+  <synopsis>
+    Read_Hash : exception;
+    
+    type Stream_Hasher(Engine : access Hasher'Class) is
+       abstract new Ada.Streams.Root_Stream_Type with private;
+    procedure Start_Hashing(Hash_Object : in out Stream_Hasher);
+    procedure Finish_Hashing(Hash_Object : in out Stream_Hasher);
+    function Retrieve_Hash(Hash_Object : Stream_Hasher) return Hash_Value;
+    
+    overriding procedure Read
+       (Hash_Object : in out Stream_Hasher;
+        Item        : out Ada.Streams.Stream_Element_Array;
+        Last        : out Ada.Streams.Stream_Element_Offset);
+    
+    overriding procedure Write
+       (Hash_Object : in out Stream_Hasher;
+        Item        : in Ada.Streams.Stream_Element_Array);
+  </synopsis>
+
+  <para>In addition to the raw data hasher interface presented above, package
+      <package>ACO.Crypt.Hash</package> defines a <type>Stream_Hasher</type> type. Instances of
+    this type wrap an underlying hasher object and provide a streams interface to the hashing
+    process. The subprograms <function>Start_Hashing</function>,
+    <function>Finish_Hashing</function>, and <function>Retrieve_Hash</function> behave as
+    described above. However, <type>Stream_Hasher</type>s are derived from the
+      <type>Root_Stream_Type</type> and thus can be used with <literal>'Read</literal> and
+      <literal>'Write</literal> attributes in the usual way. To accomplish this
+      <type>Stream_Hasher</type> provides overridings of the <function>Read</function> and
+      <function>Write</function> procedures as apppropriate. The <function>Read</function>
+    overriding simply raises <exceptionname>Read_Hash</exceptionname> because it does not make
+    sense to read a hasher object as a stream. The <function>Write</function> overriding,
+    however, simply gathers the <type>Stream_Element</type>s and passes them to the underlying
+    hasher for handling.</para>
+
+  <para>The intent of <type>Stream_Hasher</type> is to allow one to compute the hash value of an
+    in-memory data structure in a meaningful way. For example, if a complex structure such as a
+    tree is endowed with suitable streaming capability, it can be streamed into a
+      <type>Stream_Hasher</type> to compute its hash value. If the tree is then reconstructed
+    elsewhere (perhaps inside a different program), the hash value can be checked after
+    reconstruction without concerns about "trivial" differences in the external representation
+    of the structure.</para>
+
+  <section id="ACO-Crypto-Hash-None">
+    <title>Package ACO.Crypto.Hash.None</title>
+
+    <synopsis>
+      type Null_Hasher is new ACO.Crypto.Hash.Hasher with private;
+    </synopsis>
+
+    <para>The <package>ACO.Crypto.Hash.None</package> provides a concrete type
+      <type>Null_Hasher</type>. Instances of this type obey the <interface>Hasher</interface>
+      interface but perform no computations. They return a hash value consisting of a single
+      octet with the value zero regardless of the input provided to them. A
+      <type>Null_Hasher</type> instance can be used when no hash value is needed but the code
+      (for example a third party library) expects some type of <interface>Hasher</interface>
+      object. In addition <type>Null_Hasher</type> instances can be used in benchmark programs
+      to measure the overhead associated with any hashing infrastructure without the distraction
+      of also measuring the time required for executing an actual hash algorithm.</para>
+  </section>
+
+</section>

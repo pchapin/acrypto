@@ -1,0 +1,15 @@
+build/Debug/*
+build/Release/*
+src/lib/Debug/*
+src/lib/Release/*
+src/obj/Debug/*
+src/obj/Release/*
+
+# LaTeX resources
+*.aux
+*.bbl
+*.blg
+*.toc
+*.log
+*.out
+doc/Algorithms/Division.pdf

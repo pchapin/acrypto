@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.docbook.org/xml/4.5/docbookx.dtd">
+  
+<section id="ACO">
+  <title>Package ACO</title>
+
+  <para>The package <package>ACO</package> (SPARK Ada) is the top level package of this library.
+    It primarily serves as a container for various child packages, but it also holds certain
+    utility types that are of interest to the entire library (and also clients of this
+    library).</para>
+
+  <para>The child packages are as follows.</para>
+
+  <para>Package <package>ACO.Crypto</package> contains the core cryptographic algorithms.</para>
+
+  <para>Package <package>ACO.Access_Types</package> contains the definitions of various useful
+    Access types. These type definitions are not in package <package>ACO</package> because
+    package <package>ACO</package> must be written in SPARK Ada, and SPARK does not allow access
+    types.</para>
+
+  <para>Package <package>ACO.Utility</package> contains child packages supporting various
+    utiliity types and subprograms. These are facilities that might in principle be useful
+    outside of ACO but are being provided with ACO as a convenience.</para>
+
+  <para>In addition there are private child packages for each raw data type. This is described
+    in more detail below.</para>
+
+  <para>Additional child packages of <package>ACO</package> will be defined in the future to
+    provide other cryptographic services (OpenPGP, SSL, etc). At this time no other child
+    packages are defined, however.</para>
+
+  <para>The utility types are intended to represent raw, uninterpreted data in various sizes
+    along with the corresponding array types.</para>
+
+  <synopsis>
+    type Octet           is mod 2**8;
+    type Double_Octet    is mod 2**16;
+    type Quadruple_Octet is mod 2**32;
+    type Octuple_Octet   is mod 2**64;
+    
+    type Octet_Array is array(Natural range &lt;&gt;) of Octet;
+    -- And similarly for the other types.
+  </synopsis>
+
+  <para>The raw data types are modular types so that they will have intrinsic bitwise
+    operations. Representation clauses are used to ensure that the raw types have the expected
+    sizes. Note that ACO uses the type <type>Natural</type> uniformly for counting.</para>
+
+  <para>The array types are packed with their component sizes specified to match the natural
+    size for each component type. This ensures that conversions between raw data and
+    Octet_Arrays can be done without considering padding bytes. Note that ACO currently does not
+    deal with endianness issues. The endianness of the components in multi-octet arrays is
+    unspecified.</para>
+
+  <para>In addition to intrinsic bitwise operations, it is highly desirable for performance
+    reasons to also have intrinsic bit shift and rotate operations defined for the raw data
+    types. This can be accomplished with GNAT by using an Import aspect. However, GNAT requires
+    that the functions specified as intrinsic conform to a particular profile and have
+    particular names. Since SPARK does not allow names to be overloaded and since we wanted to
+    provide intrinsic bit shifts and rotates for all of the raw data types defined in package
+      <package>ACO</package>, it was necessary to create a separate child package for each type
+    (written in SPARK Ada). These packages contain raw data operations of interest to the rest
+    of the ACO library and have names such as <package>ACO.Octet_Operations</package>,
+    etc.</para>
+
+  <para>The summary of each of these operations packages is as follows.</para>
+
+  <synopsis>
+    function Shift_Left(Value : Octet; Count : Natural) return Octet
+    -- And similarly for the other types in their separate packages.
+    
+    function Shift_Right(Value : Octet; Count : Natural) return Octet;
+    -- And similarly for the other types in their separate packages.
+    
+    function Rotate_Left(Value : Octet; Count : Natural) return Octet;
+    -- And similarly for the other types in their separate packages.
+    
+    function Rotate_Right(Value : Octet; Count : Natural) return Octet;
+    -- And similarly for the other types in their separate packages.
+
+    procedure Xor_Array
+      (Accumulator  : in out Octet_Array;
+       Incoming     : in     Octet_Array;
+       Success_Flag : out    Boolean);
+    -- And similarly for the other types in their separate packages.
+  </synopsis>
+
+  <para>The procedures such as <function>Xor_Array</function> extend the bitwise operations of
+    the raw data types to entire arrays of those types. If the given arrays have different
+    sizes, the value <literal>False</literal> is written into the
+      <parameter>Success_Flag</parameter> parameter and no other operation takes place;
+    otherwise the value <literal>True</literal> is returned. This approach for handling errors
+    is due to SPARK's restriction against exceptions.</para>
+
+  <para>In the future additional raw data operations may be added to the operations packages
+    (whole array shifts and rotates?) The precise operations that will be added will depend on
+    the needs that arise as ACO develops.</para>
+
+</section>

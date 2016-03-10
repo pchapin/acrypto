@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.docbook.org/xml/4.5/docbookx.dtd">
+  
+<section id="ACO-Crypto-Algorithms">
+  <title>Package ACO.Crypto.Algorithms</title>
+
+  <para>The package <package>ACO.Crypto.Algorithms</package> (SPARK Ada) contains child packages
+    implementing the various core algorithms offered by ACO. These algorithms are used by the
+    object oriented wrappers, but they can also be used directly in programs that don't need the
+    wrappers, or that want to limit themselves to SPARK Ada or Ada 95.</para>
+
+  <section id="ACO-Crypto-Algorithms-AES">
+    <title>Package ACO.Crypto.Algorithms.AES</title>
+
+    <synopsis>
+      type AES_Algorithm is private;
+      
+      procedure Initialize
+        (B       : out AES_Algorithm;
+         Key     : in  ACO.Octet_Array;
+         Success : out Boolean);
+      
+      procedure Encrypt
+        (B       : in     AES_Algorithm;
+         Block   : in out ACO.Octet_Array;
+         Success : in out Boolean);
+      
+      procedure Decrypt
+        (B       : in     AES_Algorithm;
+         Block   : in out ACO.Octet_Array;
+         Success : in out Boolean);
+    </synopsis>
+
+    <para>The package <package>ACO.Crypto.Algorithms.AES</package> provides a private type
+        <type>AES_Algorithm</type> that implements the AES encryption algorithm<footnote>
+        <para>Currently only 128 bit keys and 128 bit blocks are supported.</para>
+      </footnote>. This type provides an <function>Initialize</function> procedure that
+      initializes <type>AES_Algorithm</type> instances. The <function>Initialize</function>
+      procedure takes the key to be used as an octet array. If an invalid key size is provided,
+        <parameter>Success</parameter> is set to <literal>False</literal>; otherwise
+        <parameter>Success</parameter> is set to <literal>True</literal>.</para>
+
+    <para>The <function>Encrypt</function> and <function>Decrypt</function> procedures perform
+      the actual encryption and description on the given block. They logically 'and'
+        <parameter>Success</parameter> with <literal>False</literal> if they are given an
+      uninitialized <type>AES_Algorithm</type> instance or a block with an invalid size. This
+      allows the success status of many invocations to be accumulated easily. One should pass a
+      variable with a value <literal>True</literal> to the first invocation of these procedures,
+      and then pass the same variable to each subsequent invocation (for example in a loop). At
+      the end of the entire process, if the value of that variable is still
+        <literal>True</literal> then all invocations were successful. It is safe to attempt to
+      encrypt or decrypt even if a previous attempt failed. A failed attempt does not evolve the
+      state of the <type>AES_Algorithm</type> object.</para>
+  </section>
+
+  <section id="ACO-Crypto-Algorithms-Blowfish">
+    <title>Package ACO.Crypto.Algorithms.Blowfish</title>
+
+    <synopsis>
+      type Blowfish_Algorithm is private;
+      
+      procedure Initialize
+        (B       : out Blowfish_Algorithm;
+         Key     : in  ACO.Octet_Array;
+         Success : out Boolean);
+      
+      procedure Encrypt
+        (B       : in     Blowfish_Algorithm;
+         Block   : in out ACO.Octet_Array;
+         Success : in out Boolean);
+      
+      procedure Decrypt
+        (B       : in     Blowfish_Algorithm;
+         Block   : in out ACO.Octet_Array;
+         Success : in out Boolean);
+    </synopsis>
+
+    <para>The package <package>ACO.Crypto.Algorithms.Blowfish</package> provides a private type
+        <type>Blowfish_Algorithm</type> that implements the Blowfish encryption algorithm. This
+      type provides an <function>Initialize</function> procedure that initializes
+        <type>Blowfish_Algorithm</type> instances. The <function>Initialize</function> procedure
+      takes the key to be used as an octet array. Note that Blowfish can not use just any key
+      size. If an invalid key size is provided, <parameter>Success</parameter> is set to
+        <literal>False</literal>; otherwise <parameter>Success</parameter> is set to
+        <literal>True</literal>.</para>
+
+    <para>The <function>Encrypt</function> and <function>Decrypt</function> procedures perform
+      the actual encryption and description on the given block. They logically 'and'
+        <parameter>Success</parameter> with <literal>False</literal> if they are given an
+      uninitialized <type>Blowfish_Algorithm</type> instance or a block with an invalid size.
+      This allows the success status of many invocations to be accumulated easily. One should
+      pass a variable with a value <literal>True</literal> to the first invocation of these
+      procedures, and then pass the same variable to each subsequent invocation (for example in
+      a loop). At the end of the entire process, if the value of that variable is still
+        <literal>True</literal> then all invocations were successful. It is safe to attempt to
+      encrypt or decrypt even if a previous attempt failed. A failed attempt does not evolve the
+      state of the <type>Blowfish_Algorithm</type> object.</para>
+  </section>
+
+</section>

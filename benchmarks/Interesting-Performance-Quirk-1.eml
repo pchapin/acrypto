@@ -1,0 +1,57 @@
+Path: news.sover.net!master.readnews.com!198.186.190.247.MISMATCH!news-out.readnews.com!news-xxxfer.readnews.com!panix!newsfeed-00.mathworks.com!nntp.TheWorld.com!not-for-mail
+From: Robert A Duff <bobduff@shell01.TheWorld.com>
+Newsgroups: comp.lang.ada
+Subject: Re: Interesting performance quirk.
+Date: Tue, 28 Oct 2008 10:21:54 -0400
+Organization: The World Public Access UNIX, Brookline, MA
+Lines: 38
+Message-ID: <wccbpx4ztod.fsf@shell01.TheWorld.com>
+References: <4903c066$0$28676$4d3efbfe@news.sover.net> <w-CdneaEgsk6ZZ7UnZ2dnUVZ_v3inZ2d@comcast.com> <49045079$0$28711$4d3efbfe@news.sover.net> <a630b4e2-2aab-4fc6-a015-15610e70f26d@j22g2000hsf.googlegroups.com> <4906f908$0$5781$4d3efbfe@news.sover.net>
+NNTP-Posting-Host: shell01.theworld.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+X-Trace: pcls4.std.com 1225203719 31122 192.74.137.71 (28 Oct 2008 14:21:59 GMT)
+X-Complaints-To: abuse@TheWorld.com
+NNTP-Posting-Date: Tue, 28 Oct 2008 14:21:59 +0000 (UTC)
+User-Agent: Gnus/5.1008 (Gnus v5.10.8) Emacs/21.3 (irix)
+Cancel-Lock: sha1:9N3GZpIiAdQQJo73rb4lbZI7ORM=
+Xref: news.sover.net comp.lang.ada:23349
+
+"Peter C. Chapin" <pcc482719@gmail.com> writes:
+
+> I'm expecting my code to be slower because a) It is Ada and there are
+> probably some extra run time checks, ...
+
+You should also compile with all checks suppressed, to determine the
+cost of the checks.  This doesn't mean you have to suppress all checks
+in order to get good performance.  After this experiment, you might be
+able to determine that suppressing checks in some inner loop (e.g. the
+procedure you intend to inline, and its call site(s))) is good enough.
+
+>... and b) I just wrote this thing and
+> I haven't yet tried to tweak it for performance.
+
+Sure.
+
+> I tried running gprof over my code to see what I could learn, but I
+> don't know how to use that tool very well yet so I didn't learn much.
+
+It's worth learning.  The gprof output can be confusing at first, but if
+you puzzle over it for a while, it begins to make more sense.  ;-)
+
+>...I
+> discovered that a certain procedure is called a HUGE number of times,
+> but that's not unexpected considering where it's used. It's a small
+> procedure so I might try inlining it.
+
+It might also make sense to look at the machine code for that procedure.
+And/or look at the expanded Ada code (using gnat's -gnatG switch).
+
+You might also want to profile the C version, and look at whatever
+tricks it uses in its inner loops, and perhaps duplicate them in
+the Ada version.
+
+Please continue to report your progress here.  I, and I'm sure others,
+are interested.
+
+- Bob

@@ -1,0 +1,62 @@
+Path: news.sover.net!master.readnews.com!198.186.190.247.MISMATCH!news-xxxfer.readnews.com!news-out.readnews.com!transit4.readnews.com!postnews.google.com!news1.google.com!npeer02.iad.highwinds-media.com!npeer01.iad.highwinds-media.com!news.highwinds-media.com!feed-me.highwinds-media.com!cyclone1.gnilink.net!spamkiller.gnilink.net!gnilink.net!nwrddc02.gnilink.net.POSTED!7c706d3b!not-for-mail
+From: David Thompson <dave.thompson2@verizon.net>
+Newsgroups: comp.lang.ada
+Subject: Re: Interesting performance quirk.
+Organization: Poor
+Message-ID: <rkc1i4p7qsbmoelptav1udh41o1m5sjbl5@4ax.com>
+References: <4903c066$0$28676$4d3efbfe@news.sover.net> <w-CdneaEgsk6ZZ7UnZ2dnUVZ_v3inZ2d@comcast.com> 	<49045079$0$28711$4d3efbfe@news.sover.net> <a630b4e2-2aab-4fc6-a015-15610e70f26d@j22g2000hsf.googlegroups.com> 	<4906f908$0$5781$4d3efbfe@news.sover.net> <34e18564-7913-426a-bb26-324314791d32@d1g2000hsg.googlegroups.com> <490833fc$0$5742$4d3efbfe@news.sover.net>
+X-Newsreader: Forte Agent 3.3/32.846
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Lines: 43
+Date: Mon, 17 Nov 2008 06:31:34 GMT
+NNTP-Posting-Host: 70.104.88.64
+X-Complaints-To: abuse@verizon.net
+X-Trace: nwrddc02.gnilink.net 1226903494 70.104.88.64 (Mon, 17 Nov 2008 01:31:34 EST)
+NNTP-Posting-Date: Mon, 17 Nov 2008 01:31:34 EST
+Xref: news.sover.net comp.lang.ada:23530
+
+On Wed, 29 Oct 2008 05:59:24 -0400, "Peter C. Chapin"
+<pcc482719@gmail.com> wrote:
+
+> Ludovic Brenta wrote:
+> 
+> > I believe OpenSSL uses hand-written and carefully optimised assembly
+> > for its inner loops.
+> 
+For some algorithms and some targets, including x86 Blowfish. 
+Unless deselected at build (specifically configuration) time.
+(The actual assembler source is created by perl effectively macros, 
+so it might be more exact to call it hand-designed.)
+
+> That's interesting. It would help to explain the speed difference...
+> although as I said I'm sure I can do better, at least a little better,
+> with the compiled Ada than I am currently.
+> 
+> In any event I don't want to "resort" to assembly language or to
+> removing the Ada mandated checks (at least not in the final version). My
+> assumption is the the sort of person who would be interested in using a
+> crypto library in Ada would have that interest precisely because of the
+> safety afforded by the Ada language. This is why I'm content with the
+> library being a bit slower than the competitors that are throwing safety
+> to the wind by, for example, using assembly language.
+> 
+> Considering that cryptography is, almost by definition, used in security
+> sensitive programs it seems like issues of safety and correctness should
+> take priority over raw efficiency. Fast is good, of course, but it's
+> even more important to be both right and secure. Hence Ada and not C
+> (and definitely not assembly language).
+> 
+Correctness is certainly vital, but the extreme nonlinearity of any
+good crypto algorithm means that even a small functional error will
+almost certainly show up very quickly and obviously. However, in
+modern systems it has become sometimes important to control exactly
+the instructions executed, and CPU's execution of those instructions
+(typically using assembler-dependent special operations), because of
+'side-channel' (mostly timing and power) attacks that have been
+developed that take advantage of things like scheduling and caching
+behavior of the crypto machine code. So carefully written assembler
+can actually be more secure! But I don't know if all the openssl is.)
+
+- formerly david.thompson1 || achar(64) || worldnet.att.net

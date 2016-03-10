@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+  "http://www.docbook.org/xml/4.5/docbookx.dtd">
+  
+<chapter id="Build">
+  <title>Building ACO</title>
+
+  <para>This chapter describes how to build ACO and associated documentation. Currently the
+    tools used to create this library are as listed below. The version numbers given are for the
+    versions used by the ACO developers. Other versions of each tool may also work. In addition,
+    tools from other vendors may work although some of the build scripts and configuration files
+    would likely need to be updated first. This document does not describe how to install these
+    tools; consult the corresponding documentation for each tool for that tool's installation
+    instructions.</para>
+
+  <variablelist>
+    <title>Build Tools</title>
+
+    <varlistentry>
+      <term>Ada Compiler</term>
+      <listitem>
+        <para>GNAT GPL 2011. Although other Ada compilers may work, you will definitely need an
+          Ada 2005 compiler. Neither Ada83 nor Ada95 is supported by ACO.</para>
+
+        <para>The ACO distribution includes GNAT project files that help coordinate the build.
+          If you are using a compiler other than GNAT you may have to create your own makefiles
+          (or similar, depending on your compiler).</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>Subversion Client</term>
+      <listitem>
+        <para>The version control system used by the ACO developers is Subversion. Although it
+          is not strictly necessary to have a Subversion client installed to build and use ACO,
+          you may find it convenient because it will allow you to easily access the latest
+          version of the system.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>DocBook Tool Chain</term>
+      <listitem>
+        <para>The documentation is written in DocBook. This is an XML format and so is readable
+          in an ordinary text editor. However, if you want to build nicely formatted
+          documentation you will need a tool chain for processing DocBook documents. Several
+          such tool chains exist. How to set up your DocBook environment is not discussed
+          further here.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>SPARK</term>
+      <listitem>
+        <para>If you want to check the implementation of the core algorithms in ACO to verify
+          that they do indeed conform to the requirements of SPARK, you will need a copy of the
+          SPARK toolset from Altran-Praxis. A free version of SPARK (in particular, SPARK GPL
+          2011) can be downloaded from AdaCore's libre site.</para>
+
+        <para>Note that you can build, test, and use ACO without the SPARK toolset. You can even
+          extend ACO without the SPARK toolset, although your extensions may not be SPARK
+          conformant.</para>
+      </listitem>
+    </varlistentry>
+
+  </variablelist>
+
+  <para>There are three GNAT project files in ACO. In the <filename>src</filename> folder you
+    will find <filename>aco.gpr</filename>. This project file builds the library. In
+      <filename>tests</filename> you will find <filename>tests.gpr</filename> that builds the
+    test program, and in <filename>benchmarks</filename> you will find
+      <filename>benchmarks.gpr</filename> that builds the benchmark programs. These projects can
+    all be run separately so, for example, if you only want to build the library for use in your
+    applications, you only need to run the <filename>aco.gpr</filename> project. You can also
+    include this project into your own project files. Note that the test and benchmark projects
+    are linked to the library project; building those other projects will automatically cause
+    the library to be built.</para>
+
+  <para>We recommend that you at least build and run the test program to ensure that the ACO
+    library can be built correctly on your platform and with your compiler.</para>
+
+  <para>The ACO projects include configuration variables that specify the operating system and
+    that specify the build type. ACO supports modern Windows operating systems and Unix systems
+    (specifically Linux). The project files should automatically detect the correct operating
+    system based on the settings (or lack of settings) of standard environment variables. The
+    build type configuration defaults to 'Debug' but you can manually select the 'Release' type,
+    for example in GPS. As is traditional, the Debug build is unoptimized and contains support
+    for run time assertions and other similar things. The Release build is optimized and removes
+    support for certain run time checks <emphasis>but leaves all Ada language mandated checks
+      enabled</emphasis>. Although efficiency is an important concern in any cryptographic
+    library, ACO is an Ada library and it not our intention to subvert the design of Ada for the
+    sake of efficiency.</para>
+
+  <para>Each project deposits the results of the build in a subfolder of that project. The two
+    projects that build programs put their results in a <filename>build</filename> folder, with
+    separate subfolders beneath that for the Debug and Release configuration. The library
+    project puts the final library in a <filename>lib</filename> folder, also with separate
+    subfolders beneath it for the Debug and Release configurations. This approach allows both
+    the Debug and Release builds to be created and maintained in parallel without overwriting
+    each other.</para>
+
+  <para>Although we expect ACO users will be primarily interested in testing the Debug build
+    (for example, during development) and benchmarking the Release build, there are good reasons
+    for using the other configurations as well. Clearly it is important to check that enabling
+    optimizations does not introduce any errors. However, users of ACO may also wish to deploy
+    the Debug version of the library in their applications in order to take advantage of the
+    greater checking (assertions) that are enabled in that configuration. Before doing so they
+    may wish to experiment with the Debug version of the benchmark program to get an idea of how
+    much of a performance degradation such a choice entails.</para>
+
+</chapter>

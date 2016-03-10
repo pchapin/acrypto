@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.docbook.org/xml/4.5/docbookx.dtd" [
+
+<!ELEMENT xi:include (xi:fallback?) >
+<!ATTLIST xi:include
+    xmlns:xi   CDATA      #FIXED     "http://www.w3.org/2001/XInclude"
+    href       CDATA      #REQUIRED
+    parse      (xml|text) "xml"
+    encoding   CDATA      #IMPLIED >
+<!ELEMENT xi:fallback ANY>
+<!ATTLIST xi:fallback
+    xmlsn:xi   CDATA      #FIXED     "http://www.w3.org/2001/XInclude" >
+<!ENTITY % local.chapter.class "| xi:include">
+<!ENTITY % local.section.class "| xi:include">
+]>
+
+<!-- FILE        : ACO-Documentation.xml
+     SUBJECT     : Master document for the ACO documentation set.
+     AUTHOR      : (C) Copyright 2014 by Peter C. Chapin
+
+This is the documentation for the Ada Cryptographic Objects library. -->
+<book status="draft">
+  <bookinfo>
+    <title>Ada Cryptographic Objects</title>
+    <author>
+      <firstname>Peter</firstname>
+      <surname>Chapin</surname>
+      <othername role="mi">C.</othername>
+      <affiliation>
+        <orgname>Vermont Technical College</orgname>
+        <orgdiv>Computer Information Systems Department</orgdiv>
+      </affiliation>
+    </author>
+    <authorinitials>pcc</authorinitials>
+    <copyright>
+      <year>2014</year>
+      <holder>Peter C. Chapin</holder>
+    </copyright>
+    <legalnotice>
+      <para> Permission is granted to copy, distribute and/or modify this document under the
+        terms of the GNU Free Documentation License, Version 1.1 or any later version published
+        by the Free Software Foundation; with the Invariant Sections being LIST THEIR TITLES,
+        with the Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST. A copy
+        of the license is included in the section entitled "GNU Free Documentation License".
+      </para>
+    </legalnotice>
+    <!-- Do I really want to include this revision history now? -->
+    <revhistory>
+      <revision>
+        <revnumber>0.0</revnumber>
+        <date>2014-12-31</date>
+        <authorinitials>pcc</authorinitials>
+        <revremark>This is a work in progress.</revremark>
+      </revision>
+    </revhistory>
+  </bookinfo>
+  <preface id="Introduction">
+    <title>Introduction</title>
+
+    <para>The Ada Cryptographic Objects library (ACO) was originally developed to meet my need
+      for a free (as in speech) library of cryptographic primitives in Ada. Although there are a
+      number of other such libraries available, for various reasons none of them seemed to suit
+      my needs. Other libraries were incomplete in that they left out operations that were
+      critical to me (public key cryptography being the most common omission), or were too
+      heavyweight in that they included many facilities that were irrelevant to me. In contrast,
+      ACO is tightly focused on cryptographic operations. It is not intended to be a general
+      purpose library nor a collection of arbitrary, unrelated packages.</para>
+
+    <para>ACO is written entirely in Ada with no calls to C or assembly language. In fact the
+      core algorithms in ACO are written in a subset of Ada used for high integrity programming
+      known as SPARK. The algorithm implementations have been checked with the SPARK tool set to
+      provide additional confidence of their correctness over and above that provided by testing alone<footnote>
+        <para>This work is currently ongoing.</para>
+      </footnote>. This is a unique aspect of ACO that sets it apart from other free
+      cryptographic libraries.</para>
+
+    <para>One consequence of ACO's use of SPARK Ada is that the performance of ACO is not as
+      good as for other cryptographic libraries that are willing to slip into C or assembly
+      language for their innermost loops. While performance is clearly a priority for a general
+      purpose cryptographic library, we believe that correctness and security are even higher
+      priorities for a library of this nature. It is unfortunately too common for security
+      libraries to actually introduce security vulnerabilities into the programs that use
+      them.</para>
+
+    <para>Although ACO is first and foremost a cryptographic library, we do include a few
+      general purpose components. The purpose of these components is to support the
+      cryptographic operations provided by the rest of the library. In some cases they are not
+      general enough to be of interest in other applications. In some cases they are. In any
+      event, we wanted to make ACO as self-contained as possible. Thus we are reluctant to make
+      extensive use of existing third party libraries.</para>
+
+    <para>This may seem contrary to the principles of good software engineering. However, this
+      approach means that you don't have to download and install some other library to use ACO
+      and you don't have to worry about inconsistent visions between different libraries (at
+      least insofar as ACO is concerned).</para>
+
+    <para>ACO is covered by the Lesser GNU Public License. This basically means that you are
+      free to use it in any way that you wish as well as modify it as you desire. See the file
+        <filename>LGPL.txt</filename> for more details.</para>
+
+    <para>The algorithms implemented in this library are all freely usable. They are either not
+      patented, their patents have expired, or their patent owners have specifically allowed the
+      algorithms to be used in any application<footnote>
+        <para>If you believe this is not true for any of the algorithms we provide here, please
+          let us know so we can investigate and correct the situation.</para>
+      </footnote>. The code in ACO was independently developed without reference to any existing
+      Ada implementation. In effect, this code was all written in an Ada clean room, and does
+      not infringe any copyrights. Finally, this document is also free (as in speech) and may be
+      distributed and modified under the terms of the GNU Free Documentation License. See the
+        file<filename>GFDL.txt</filename> for more details.</para>
+
+    <!-- Include disclaimer of warrantee. -->
+
+  </preface>
+
+  <xi:include href="doc-Build.xml"/>
+
+  <chapter id="Reference">
+    <title>Reference</title>
+
+    <para>In this chapter the application program interface (API) is described in detail. A
+      separate section is given for each major package. In addition to discussing the types and
+      subprograms provided by the ACO library, the motivation for certain low level design
+      decisions is also given. This provides insight into how the library should be used.</para>
+
+    <para>Not all of the packages in ACO are written in the SPARK subset of Ada. SPARK imposes
+      restrictions on the Ada language features that can be used. In particular object oriented
+      techniques are not allowed in SPARK. However, ACO provides object oriented hierarchies to
+      help make the library more flexible. This apparent contradiction is resolved by dividing
+      the library into two parts: one part is written in SPARK and contains the raw algorithm
+      implementations (and supporting packages). The other part is written in full Ada and
+      includes types that wrap the raw implementations in a convenient object oriented
+      manner.</para>
+
+    <para>Most users will want to use the object oriented wrappers. Specialized users who are
+      interested in high reliability or who don't want the overhead of an object oriented
+      interface, can use the raw algorithm implementations directly. In fact, ACO is distributed
+      in two ways: the full distribution contains all packages in the library, but there is also
+      a minimal distribution that just contains the raw algorithm implementations written in
+      SPARK Ada.</para>
+
+    <para>Note that package ACO is the root of ACO's entire package hierarchy; there are (direct
+      and indirect) child packages of ACO that are in full Ada and (direct and indirect) child
+      packages that are in SPARK Ada. SPARK rules require that all packages in the hierarchy
+      above a SPARK Ada package also be written in SPARK Ada (thus package ACO itself is in
+      SPARK Ada). However, that does not prevent sibling packages to be in full Ada if desired.
+      This is the approach taken by ACO.</para>
+
+    <para>In the documentation that follows each package is noted as being in either full Ada or
+      SPARK Ada. The packages that are in full Ada are not part of the ACO minimal
+      distribution.</para>
+
+    <xi:include href="doc-ACO.xml"/>
+    <xi:include href="doc-ACO-Access_Types.xml"/>
+    <xi:include href="doc-ACO-Crypto.xml"/>
+    <xi:include href="doc-ACO-Crypto-Algorithms.xml"/>
+    <xi:include href="doc-ACO-Crypto-Exceptions.xml"/>
+    <xi:include href="doc-ACO-Crypto-Block_Cipher.xml"/>
+    <xi:include href="doc-ACO-Crypto-Stream_Cipher.xml"/>
+    <xi:include href="doc-ACO-Crypto-Hash.xml"/>
+    <xi:include href="doc-ACO-Math-Very_Longs.xml"/>
+  </chapter>
+
+
+  <!-- <bibliography> ... </bibliography> -->
+
+</book>
