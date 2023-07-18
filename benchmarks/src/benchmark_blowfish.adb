@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : benchmark_blowfish.adb
 -- SUBJECT : A benchmark procedure for Blowfish.
--- AUTHOR  : (C) Copyright 2012 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2012 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 with ACO.Crypto.Block_Cipher.Blowfish;
 with Generic_Block_Cipher;

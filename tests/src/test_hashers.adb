@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : test_hashes.adb
 -- SUBJECT : Test package for ACO.Crypto.Hash
--- AUTHOR  : (C) Copyright 2009 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2009 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 
 with Ada.Text_IO;

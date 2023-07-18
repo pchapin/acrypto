@@ -1,14 +1,14 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco-math-very_longs.ads
 -- SUBJECT : Specification of an extended precision integer package.
--- AUTHOR  : (C) Copyright 2015 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2015 by Peter Chapin
 --
 -- The integers provided here are unsigned modular integers. The operations are of a sort used
 -- by cryptographic applications. This package is not intended to model mathematical integers.
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 pragma SPARK_Mode(On);
 

@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco-crypto-stream_cipher.adb
 -- SUBJECT : Implementation of stream cipher abstract types.
--- AUTHOR  : (C) Copyright 2008 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2008 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 with ACO.Crypto.Exceptions;
 

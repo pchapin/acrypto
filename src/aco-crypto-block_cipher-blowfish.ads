@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco-crypto-block_cipher-blowfish.ads
 -- SUBJECT : Interface to Blowfish block cipher type.
--- AUTHOR  : (C) Copyright 2010 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2010 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 private with ACO.Crypto.Algorithms.Blowfish;
 

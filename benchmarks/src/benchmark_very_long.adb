@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : benchmark_very_long.adb
 -- SUBJECT : A benchmark procedure for Very_Long integers.
--- AUTHOR  : (C) Copyright 2015 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2015 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 with Ada.Calendar;
 with Ada.Float_Text_IO;

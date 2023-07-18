@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco.ads
 -- SUBJECT : Parent package for the Ada Cryptograhic Objects library.
--- AUTHOR  : (C) Copyright 2008 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2008 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 pragma SPARK_Mode(On);
 

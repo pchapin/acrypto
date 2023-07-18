@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : acrypto_tests.adb
 -- SUBJECT : Driver for all unit tests.
--- AUTHOR  : (C) Copyright 2009 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2009 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 
 with Ada.Text_IO; use Ada.Text_IO;

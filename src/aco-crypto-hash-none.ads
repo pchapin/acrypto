@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco-crypto-hash-none.ads
 -- SUBJECT : Specification of a null hash function.
--- AUTHOR  : (C) Copyright 2008 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2008 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 
 package ACO.Crypto.Hash.None is

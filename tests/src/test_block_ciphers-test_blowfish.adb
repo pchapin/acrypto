@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : test_block_ciphers-test_blowfish.adb
 -- SUBJECT : Procedure to test the Blowfish implementation.
--- AUTHOR  : (C) Copyright 2009 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2009 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 with ACO.Crypto.Block_Cipher.BLowfish;
 

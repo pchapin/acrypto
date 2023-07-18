@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : sha1sum.ads
 -- SUBJECT : Program to compute the SHA1 hash of a file.
--- AUTHOR  : (C) Copyright 2010 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2010 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 with Ada.Characters.Latin_1;
 with Ada.Command_Line;

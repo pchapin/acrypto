@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco-math-very_longs-test.adb
 -- SUBJECT : Test package for ACO.Math.Very_Longs
--- AUTHOR  : (C) Copyright 2015 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2015 by Peter Chapin
 --
 -- To-Do:
 --
@@ -13,7 +13,7 @@
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 
 with Ada.Characters.Handling;

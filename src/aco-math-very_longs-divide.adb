@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco-math-very_longs-divide.adb
 -- SUBJECT : Implementation of procedure Divide
--- AUTHOR  : (C) Copyright 2015 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2015 by Peter Chapin
 --
 -- It is a mystery of the universe why integer division is so much more complicated to do than
 -- the other three arithmetic operations. This procedure implements "Algorithm D" from Knuth's
@@ -10,7 +10,7 @@
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 separate(ACO.Math.Very_Longs)
 

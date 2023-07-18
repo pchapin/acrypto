@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco-crypto-hash.ads
 -- SUBJECT : Package that defines the interface to the hash algorithms.
--- AUTHOR  : (C) Copyright 2008 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2008 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 with Ada.Streams;
 with Interfaces;

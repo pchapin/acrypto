@@ -1,13 +1,13 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco-crypto-algorithms-aes.ads
 -- SUBJECT : Specification of a package holding the raw AES algorithm.
--- AUTHOR  : (C) Copyright 2014 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2014 by Peter Chapin
 --
 -- This version only supports 128 bit keys.
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 pragma SPARK_Mode(On);
 

@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco-crypto-block_cipher-none.ads
 -- SUBJECT : Interface to the Null_Cipher block cipher type.
--- AUTHOR  : (C) Copyright 2008 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2008 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 
 package ACO.Crypto.Block_Cipher.None is

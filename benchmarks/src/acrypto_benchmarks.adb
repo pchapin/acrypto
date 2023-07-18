@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : acrypto_benchmarks.adb
 -- SUBJECT : The main program for the ACO benchmark tests.
--- AUTHOR  : (C) Copyright 2012 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2012 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 with Ada.Text_IO;
 with Benchmark_Blowfish;

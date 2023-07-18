@@ -1,13 +1,13 @@
 ---------------------------------------------------------------------------
 -- FILE    : dispatching_block_cipher.adb
 -- SUBJECT : A benchmark procedure for block ciphers.
--- AUTHOR  : (C) Copyright 2012 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2012 by Peter Chapin
 --
 -- This procedure can benchmark any block cipher by dispatching to the core algorithm.
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 with Ada.Calendar;
 with Ada.Float_Text_IO;

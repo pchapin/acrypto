@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : test_hashers-test_sha1.adb
 -- SUBJECT : Procedure to test the SHA1 implementation.
--- AUTHOR  : (C) Copyright 2010 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2010 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 with ACO.Crypto.Algorithms.SHA1;
 with ACO.Quadruple_Octet_Operations;

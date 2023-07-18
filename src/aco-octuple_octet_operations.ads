@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco-octuple_octet_operations.ads
 -- SUBJECT : Intrinsic and related operations for ACO.Octuple_Octet
--- AUTHOR  : (C) Copyright 2014 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2014 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 pragma SPARK_Mode(On);
 

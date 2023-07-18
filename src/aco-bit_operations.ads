@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco-bit_operations.ads
 -- SUBJECT : Bit manipulation operations that currently can't be proven by SPARK.
--- AUTHOR  : (C) Copyright 2014 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2014 by Peter Chapin
 --
 -- This package is necessary because currently (June 2014) SPARK doesn't have much knowledge of
 -- Ada's bit manipulation operators. Thus it has trouble proving freedom from runtime errors in
@@ -15,7 +15,7 @@
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 pragma SPARK_Mode(On);
 

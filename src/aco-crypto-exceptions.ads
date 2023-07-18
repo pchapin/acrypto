@@ -1,11 +1,11 @@
 ---------------------------------------------------------------------------
 -- FILE    : aco-crypto-exceptions.ads
 -- SUBJECT : Specification of a package holding crypto exceptions.
--- AUTHOR  : (C) Copyright 2010 by Peter C. Chapin
+-- AUTHOR  : (C) Copyright 2010 by Peter Chapin
 --
 -- Please send comments or bug reports to
 --
---      Peter C. Chapin <PChapin@vtc.vsc.edu>
+--      Peter Chapin <spicacality@kelseymountain.org>
 ---------------------------------------------------------------------------
 
 package ACO.Crypto.Exceptions is
