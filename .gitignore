@@ -1,9 +1,3 @@
-build/Debug/*
-build/Release/*
-src/lib/Debug/*
-src/lib/Release/*
-src/obj/Debug/*
-src/obj/Release/*
 
 # LaTeX resources
 *.aux
@@ -13,3 +7,9 @@ src/obj/Release/*
 *.log
 *.out
 doc/Algorithms/Division.pdf
+
+# Created by Alire
+/obj/
+/lib/
+/alire/
+/config/
