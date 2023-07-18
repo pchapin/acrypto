@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------
--- FILE    : tests.adb
+-- FILE    : acrypto_tests.adb
 -- SUBJECT : Driver for all unit tests.
 -- AUTHOR  : (C) Copyright 2009 by Peter C. Chapin
 --
@@ -15,7 +15,7 @@ with Test_Block_Ciphers;
 with Test_Stream_Ciphers;
 with Test_Hashers;
 
-procedure Tests is
+procedure Acrypto_Tests is
 begin
    Put_Line("Executing Very_Long Tests");
    ACO.Math.Very_Longs.Test.Execute;
@@ -31,4 +31,4 @@ begin
    New_Line(1);
    Put_Line("Executing Hash Tests");
    Test_Hashers.Execute;
-end Tests;
+end Acrypto_Tests;

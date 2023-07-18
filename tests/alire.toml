@@ -1,0 +1,18 @@
+name = "acrypto_tests"
+description = "ACO tests"
+version = "0.1.0-dev"
+
+authors = ["Peter Chapin"]
+maintainers = ["Peter Chapin <spicacality@kelseymountain.org>"]
+maintainers-logins = ["pchapin"]
+
+executables = ["acrypto_tests"]
+
+[build-switches]
+"*".style_checks = "No"
+
+[[depends-on]]
+acrypto = "*"
+
+[[pins]]
+acrypto = { path = ".." }
